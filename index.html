@@ -284,6 +284,31 @@
       </div>
     </div>
 
+    <!-- 字數分類看板 -->
+    <div x-show="!loading && !error && isBoardTab" class="board">
+      <template x-for="col in boardColumns" :key="col.label">
+        <div class="board-col">
+          <div class="board-col-head">
+            <span class="board-col-label" x-text="col.label"></span>
+            <span class="board-col-count" x-text="col.songs.length"></span>
+          </div>
+          <div class="board-col-body">
+            <template x-for="song in col.songs" :key="song.title + song.artist">
+              <div class="board-card" @click="selectedSong = song">
+                <span x-text="song.title"></span>
+                <button
+                  class="copy-bar"
+                  :class="copiedSong === song ? 'copied' : ''"
+                  @click.stop="copyTitle(song)"
+                  x-text="copiedSong === song ? '✓ 已複製！' : '複製歌名'">
+                </button>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+    </div>
+
     <div class="footer">歡迎點歌:D 貼鐵正努力升級網頁中....。</div>
     <div class="footer" style="margin-top:8px">Copyright &copy; 2026 natz35609 時朔. All rights reserved.</div>
   </main>

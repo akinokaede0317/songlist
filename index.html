@@ -170,7 +170,7 @@
   </header>
 
   <main class="wrap">
-    <div class="tools">
+    <div class="tools" x-show="!isBoardTab">
       <input type="search" placeholder="搜尋：歌名 / 歌手 / 備註 / 熟悉度 / 倍數" x-model="search" />
       <select x-model="langFilter">
         <option value="">語言（全部）</option>
@@ -240,7 +240,7 @@
     </div>
 
     <!-- 雙窗格版型：歌手清單 + 歌曲 -->
-    <div x-show="!loading && !error && !isGridTab" class="twoPane">
+    <div x-show="!loading && !error && !isGridTab && !isBoardTab" class="twoPane">
       <div class="pane-left">
         <template x-for="artist in artistList" :key="artist.name">
           <div class="artist-item"

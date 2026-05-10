@@ -267,7 +267,7 @@
   const CONFIG = {
     GAS_URL: "https://script.google.com/macros/s/AKfycbxHCLbwrmnziMInvdbIoUWSoh_CWoYxeDZQjA2h4hDJ_1CJFRG59kMR6fvJdk_rO6QdVQ/exec",
     SHEET_VIEW_URL: "https://docs.google.com/spreadsheets/d/1KtcxTQHNL-Ew6prA5ppQAajuF92pk0dXs3zBUyrbEMU/edit",
-    CATEGORY_TABS: ["所有歌曲","男歌手","女歌手","合唱","其他...","加倍歌單"]
+    CATEGORY_TABS: ["所有歌曲","男歌手","女歌手","合唱","其他...","加倍歌單","字數分類"]
   };
 
   /* ========= 工具函式 ========= */
@@ -347,10 +347,33 @@
       copiedSong: null,
       pickedSong: null,
       tagMap: {},
+      selectedSong: null,
 
       /* ── computed ── */
       get isGridTab() {
         return ['所有歌曲', '加倍歌單', '其他...'].includes(this.activeTab);
+      },
+
+      get isBoardTab() {
+        return this.activeTab === '字數分類';
+      },
+
+      get boardColumns() {
+        const buckets = [
+          { label: '1字', songs: [] },
+          { label: '2字', songs: [] },
+          { label: '3字', songs: [] },
+          { label: '4字', songs: [] },
+          { label: '5字', songs: [] },
+          { label: '6字', songs: [] },
+          { label: '7字以上', songs: [] },
+        ];
+        for (const song of this.rows) {
+          const n = [...(song.title || '')].length;
+          const idx = Math.min(n - 1, 6);
+          if (idx >= 0) buckets[idx].songs.push(song);
+        }
+        return buckets;
       },
 
       get artistList() {
@@ -375,6 +398,9 @@
         this.$watch('lenFilter', () => this.applyFilters(true));
         this.$watch('multOnly',   () => this.applyFilters(false));
         this.$watch('langFilter', () => this.applyFilters(true));
+        document.addEventListener('keydown', e => {
+          if (e.key === 'Escape') this.closeModal();
+        });
         this.fetchTags();
         this.fetchSheet();
         setInterval(() => this.fetchSheet(), 86400000);
@@ -593,6 +619,10 @@
           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
         setTimeout(() => { this.pickedSong = null; }, 1500);
+      },
+
+      closeModal() {
+        this.selectedSong = null;
       },
     }));
   });

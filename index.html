@@ -311,6 +311,43 @@
 
     <div class="footer">歡迎點歌:D 貼鐵正努力升級網頁中....。</div>
     <div class="footer" style="margin-top:8px">Copyright &copy; 2026 natz35609 時朔. All rights reserved.</div>
+    <!-- 歌曲詳細資料 Modal -->
+    <div class="modal-overlay" x-show="selectedSong" x-cloak @click.self="closeModal()">
+      <div class="modal-box">
+        <button class="modal-close" @click="closeModal()">✕</button>
+        <template x-if="selectedSong">
+          <div>
+            <h2 class="modal-title" x-text="selectedSong.title"></h2>
+            <div class="modal-artist" x-text="selectedSong.artist || ''"></div>
+            <div class="modal-badges">
+              <span class="tag" x-text="selectedSong.category || '未分類'"></span>
+              <span class="badge badge-gold" x-show="selectedSong.isTop === 'TRUE'">⭐ 推薦</span>
+              <template x-for="tok in (selectedSong.tags || [])" :key="tok">
+                <span class="badge" :style="tagStyle(tok)" x-text="tok"></span>
+              </template>
+              <span class="badge"
+                x-show="multBadgeText(selectedSong.multiplier)"
+                :class="multBadgeClass(selectedSong.multiplier)"
+                x-text="multBadgeText(selectedSong.multiplier)"></span>
+            </div>
+            <div class="modal-actions">
+              <a x-show="selectedSong.url"
+                 class="modal-btn"
+                 :href="selectedSong.url"
+                 target="_blank"
+                 rel="noopener">▶ 播放／連結</a>
+              <button
+                class="modal-btn modal-btn-copy"
+                :class="copiedSong === selectedSong ? 'copied' : ''"
+                @click="copyTitle(selectedSong)"
+                x-text="copiedSong === selectedSong ? '✓ 已複製！' : '複製歌名'">
+              </button>
+            </div>
+            <div class="modal-footer" x-text="formatDate(selectedSong.updatedAt)"></div>
+          </div>
+        </template>
+      </div>
+    </div>
   </main>
 
   <script>
